@@ -1,0 +1,386 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Customer Relationship Management API Documentation",
+        "description": "Project created as a sample project for Gapstar",
+        "contact": {
+            "email": "admin@admin.com"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://127.0.0.1:8000/api",
+            "description": "CRM API Server"
+        },
+        {
+            "url": "http://127.0.0.1:8000/api"
+        }
+    ],
+    "paths": {
+        "/customers": {
+            "get": {
+                "tags": [
+                    "Customers"
+                ],
+                "summary": "Get list of customers",
+                "description": "Returns list of customers",
+                "operationId": "getCustomerList",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CustomerResource"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Customers"
+                ],
+                "summary": "Store new customers",
+                "description": "Returns customers data",
+                "operationId": "storeCustomer",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateCustomerRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Customer"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                }
+            }
+        },
+        "/customers/{id}": {
+            "get": {
+                "tags": [
+                    "Projects"
+                ],
+                "summary": "Get customer information",
+                "description": "Returns customer data",
+                "operationId": "getCustomerById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Customer id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Customer"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Customers"
+                ],
+                "summary": "Update existing customer",
+                "description": "Returns updated customer data",
+                "operationId": "updateCustomer",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Customer id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateCustomerRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "202": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Customer"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Resource Not Found"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Customers"
+                ],
+                "summary": "Delete existing customer",
+                "description": "Deletes a record and returns no content",
+                "operationId": "deleteCustomer",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Customer id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Resource Not Found"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "CreateCustomerRequest": {
+                "title": "Store Customer request",
+                "description": "Store Customer request body data",
+                "required": [
+                    "first_name",
+                    "last_name",
+                    "email",
+                    "phone_number"
+                ],
+                "properties": {
+                    "first_name": {
+                        "title": "first_name",
+                        "description": "First name of the new customer",
+                        "type": "string",
+                        "example": "John"
+                    },
+                    "last_name": {
+                        "title": "last_name",
+                        "description": "Last name of the new customer",
+                        "type": "string",
+                        "example": "Doe"
+                    },
+                    "email": {
+                        "title": "email",
+                        "description": "Email of the new customer",
+                        "type": "string",
+                        "example": "admin@admin.com"
+                    },
+                    "phone_number": {
+                        "title": "phone_number",
+                        "description": "Phone number of the new customer",
+                        "type": "string",
+                        "example": "94773333333"
+                    }
+                },
+                "type": "object"
+            },
+            "Customer": {
+                "title": "Customer",
+                "description": "Customer model",
+                "properties": {
+                    "id": {
+                        "title": "ID",
+                        "description": "ID",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "first_name": {
+                        "title": "First Name",
+                        "description": "First name of the new customer",
+                        "type": "string",
+                        "example": "John"
+                    },
+                    "last_name": {
+                        "title": "Last Name",
+                        "description": "Last name of the new customer",
+                        "type": "string",
+                        "example": "Doe"
+                    },
+                    "email": {
+                        "title": "Email",
+                        "description": "Email of the new customer",
+                        "type": "string",
+                        "example": "admin@admin.com"
+                    },
+                    "phone_number": {
+                        "title": "Phone Number",
+                        "description": "Phone number of the new customer",
+                        "type": "string",
+                        "example": "94773333333"
+                    },
+                    "created_at": {
+                        "title": "Created at",
+                        "description": "Created at",
+                        "type": "string",
+                        "format": "datetime",
+                        "example": "2021-01-01 00:00:01"
+                    },
+                    "updated_at": {
+                        "title": "Updated at",
+                        "description": "Updated at",
+                        "type": "string",
+                        "format": "datetime",
+                        "example": "2021-01-01 00:00:01"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "Customer"
+                }
+            },
+            "CustomerResource": {
+                "title": "CustomerResource",
+                "description": "Customer resource",
+                "properties": {
+                    "data": {
+                        "title": "Data",
+                        "description": "Data wrapper",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Customer"
+                        }
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "CustomerResource"
+                }
+            },
+            "UpdateCustomerRequest": {
+                "title": "Store Customer request",
+                "description": "Store Customer request body data",
+                "required": [
+                    "first_name",
+                    "last_name",
+                    "email",
+                    "phone_number"
+                ],
+                "properties": {
+                    "first_name": {
+                        "title": "first_name",
+                        "description": "First name of the new customer",
+                        "type": "string",
+                        "example": "John"
+                    },
+                    "last_name": {
+                        "title": "last_name",
+                        "description": "Last name of the new customer",
+                        "type": "string",
+                        "example": "Doe"
+                    },
+                    "email": {
+                        "title": "email",
+                        "description": "Email of the new customer",
+                        "type": "string",
+                        "example": "admin@admin.com"
+                    },
+                    "phone_number": {
+                        "title": "phone_number",
+                        "description": "Phone number of the new customer",
+                        "type": "string",
+                        "example": "94773333333"
+                    }
+                },
+                "type": "object"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Customers",
+            "description": "API Endpoints of Customers"
+        }
+    ],
+    "security": [
+        []
+    ]
+}

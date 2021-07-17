@@ -1,6 +1,6 @@
 <?php
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\CustomersApiController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,6 +14,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::get('/customers', [CustomersApiController::class,'index']);
+    Route::post('/customers', [CustomersApiController::class,'store']);
+    Route::get('/customers/{customer}', [CustomersApiController::class,'show']);
+    Route::put('/customers/{customer}', [CustomersApiController::class,'update']);
+    Route::delete('/customers/{customer}', [CustomersApiController::class,'destroy']);
 });
