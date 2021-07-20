@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CustomersApiController;
+use App\Http\Controllers\LoginController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,6 +15,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::post('/login', [LoginController::class,'authenticate']);
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/customers', [CustomersApiController::class,'index']);
     Route::post('/customers', [CustomersApiController::class,'store']);

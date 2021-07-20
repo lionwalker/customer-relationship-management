@@ -20,7 +20,7 @@ class UpdateCustomerRequest extends FormRequest
             'email' => [
                 'required',
                 'string',
-                Rule::unique('customers', 'email')->ignore($this->email)
+                Rule::unique('customers', 'id')->ignore($this->id)
             ],
             'phone_number' => 'required|string|max:15',
         ];
