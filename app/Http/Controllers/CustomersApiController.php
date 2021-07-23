@@ -7,8 +7,6 @@ use App\Http\Requests\UpdateCustomerRequest;
 use App\Http\Resources\CustomerResource;
 use App\Imports\CustomersImport;
 use App\Models\Customer;
-use Carbon\Carbon;
-use Illuminate\Http\Resources\Json\JsonResource;
 use Symfony\Component\HttpFoundation\Response;
 
 class CustomersApiController extends Controller
