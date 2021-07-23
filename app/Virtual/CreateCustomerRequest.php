@@ -9,8 +9,7 @@ use phpDocumentor\Reflection\File;
  * @OA\Schema(
  *      title="Store Customer request",
  *      description="Store Customer request body data",
- *      type="object",
- *      required={"first_name","last_name","email","phone_number"}
+ *      type="object"
  * )
  */
 class CreateCustomerRequest
@@ -58,4 +57,16 @@ class CreateCustomerRequest
      * @var string
      */
     public $phone_number;
+
+    /**
+     * @OA\Property(
+     *      title="Bulk",
+     *      description="CSV file to create / update customers",
+     *      type="string",
+     *      format="binary",
+     * )
+     *
+     * @var file
+     */
+    public $bulk;
 }

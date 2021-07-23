@@ -51,14 +51,17 @@ class CustomersApiController extends Controller
      *      security={{"sanctum":{}}},
      *      @OA\RequestBody(
      *          required=true,
-     *          @OA\JsonContent(ref="#/components/schemas/CreateCustomerRequest")
-     *      ),
-     *     @OA\Parameter(
-     *          name="bulk",
-     *          in="query",
-     *          description="CSV file to create / update customers",
-     *          required=true,
-     *          @OA\Schema(type="file"),
+     *          @OA\MediaType(
+     *              mediaType="multipart/form-data",
+     *              @OA\Schema(ref="#/components/schemas/CreateCustomerRequest"),
+     *              @OA\Parameter(
+     *                  name="bulk",
+     *                  in="query",
+     *                  description="CSV file to create / update customers",
+     *                  required=true,
+     *                  @OA\Schema(type="file"),
+     *              ),
+     *          ),
      *      ),
      *      @OA\Response(
      *          response=201,
