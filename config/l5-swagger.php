@@ -139,6 +139,15 @@ return [
         */
         'securityDefinitions' => [
             'securitySchemes' => [
+
+                'sanctum' => [
+                    'type' => 'apiKey',
+                    'description' => 'Login with email and password to get the authentication token',
+                    'name' => 'Authorization',
+                    'scheme' => "bearer",
+                    'in' => 'header',
+                ],
+
                 /*
                  * Examples of Security schemes
                 */

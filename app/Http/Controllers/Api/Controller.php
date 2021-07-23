@@ -8,7 +8,7 @@ class Controller
      * @OA\Info(
      *      version="1.0.0",
      *      title="Customer Relationship Management API Documentation",
-     *      description="Project created as a sample project for Gapstar",
+     *      description="Project created as a sample project for Gapstars",
      *      @OA\Contact(
      *          email="admin@admin.com"
      *      ),
@@ -25,8 +25,15 @@ class Controller
 
      *
      * @OA\Tag(
+     *     name="Authentication",
+     *     description="API Endpoints of Authentication"
+     * )
+     *
+
+     *
+     * @OA\Tag(
      *     name="Customers",
-     *     description="API Endpoints of Customers"
+     *     description="API Endpoints of Customers Relationship Management"
      * )
      */
 }

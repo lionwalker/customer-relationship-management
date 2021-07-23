@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\CustomersApiController;
-use App\Http\Controllers\LoginController;
+use App\Http\Controllers\AuthorizationApiController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,11 +15,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('/login', [LoginController::class,'authenticate']);
+Route::post('/login', [AuthorizationApiController::class,'authenticate']);
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/customers', [CustomersApiController::class,'index']);
     Route::post('/customers', [CustomersApiController::class,'store']);
     Route::get('/customers/{customer}', [CustomersApiController::class,'show']);
     Route::put('/customers/{customer}', [CustomersApiController::class,'update']);
     Route::delete('/customers/{customer}', [CustomersApiController::class,'destroy']);
+    Route::post('/logout', [AuthorizationApiController::class,'logout']);
 });

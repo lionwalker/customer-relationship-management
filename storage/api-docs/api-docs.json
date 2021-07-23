@@ -2,7 +2,7 @@
     "openapi": "3.0.0",
     "info": {
         "title": "Customer Relationship Management API Documentation",
-        "description": "Project created as a sample project for Gapstar",
+        "description": "Project created as a sample project for Gapstars",
         "contact": {
             "email": "admin@admin.com"
         },
@@ -22,6 +22,77 @@
         }
     ],
     "paths": {
+        "/login": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Login the user",
+                "description": "Login the user",
+                "operationId": "loginUser",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/LoginRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/LoginResource"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                }
+            }
+        },
+        "/logout": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Logout the authenticated user",
+                "description": "Logout the authenticated user",
+                "operationId": "logoutUser",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/LogoutResource"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
         "/customers": {
             "get": {
                 "tags": [
@@ -47,7 +118,12 @@
                     "403": {
                         "description": "Forbidden"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
             },
             "post": {
                 "tags": [
@@ -56,6 +132,17 @@
                 "summary": "Store new customers",
                 "description": "Returns customers data",
                 "operationId": "storeCustomer",
+                "parameters": [
+                    {
+                        "name": "bulk",
+                        "in": "query",
+                        "description": "CSV file to create / update customers",
+                        "required": true,
+                        "schema": {
+                            "type": "file"
+                        }
+                    }
+                ],
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -86,13 +173,18 @@
                     "403": {
                         "description": "Forbidden"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
             }
         },
         "/customers/{id}": {
             "get": {
                 "tags": [
-                    "Projects"
+                    "Customers"
                 ],
                 "summary": "Get customer information",
                 "description": "Returns customer data",
@@ -128,7 +220,12 @@
                     "403": {
                         "description": "Forbidden"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
             },
             "put": {
                 "tags": [
@@ -181,7 +278,12 @@
                     "404": {
                         "description": "Resource Not Found"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
             },
             "delete": {
                 "tags": [
@@ -219,7 +321,12 @@
                     "404": {
                         "description": "Resource Not Found"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
             }
         }
     },
@@ -258,6 +365,29 @@
                         "description": "Phone number of the new customer",
                         "type": "string",
                         "example": "94773333333"
+                    }
+                },
+                "type": "object"
+            },
+            "LoginRequest": {
+                "title": "Login user request",
+                "description": "Login user request body data",
+                "required": [
+                    "email",
+                    "password"
+                ],
+                "properties": {
+                    "email": {
+                        "title": "email",
+                        "description": "Email of the user",
+                        "type": "string",
+                        "example": "admin@admin.com"
+                    },
+                    "password": {
+                        "title": "password",
+                        "description": "passowrd of the customer",
+                        "type": "string",
+                        "example": "Admin@123"
                     }
                 },
                 "type": "object"
@@ -317,6 +447,44 @@
                     "name": "Customer"
                 }
             },
+            "Login": {
+                "title": "Login",
+                "description": "Login model",
+                "properties": {
+                    "message": {
+                        "title": "Message",
+                        "description": "Response message",
+                        "type": "integer",
+                        "example": "Successfully logged in"
+                    },
+                    "token": {
+                        "title": "Token",
+                        "description": "Token of logged in user",
+                        "type": "string",
+                        "example": "1|DFhE1owmYYobMAMgfILjSRuMZz0BRkgqQn3tdvvd"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "Login"
+                }
+            },
+            "Logout": {
+                "title": "Logout",
+                "description": "Logout model",
+                "properties": {
+                    "message": {
+                        "title": "Message",
+                        "description": "Response message",
+                        "type": "integer",
+                        "example": "Successfully logged out"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "Logout"
+                }
+            },
             "CustomerResource": {
                 "title": "CustomerResource",
                 "description": "Customer resource",
@@ -333,6 +501,42 @@
                 "type": "object",
                 "xml": {
                     "name": "CustomerResource"
+                }
+            },
+            "LoginResource": {
+                "title": "LoginResource",
+                "description": "Login resource",
+                "properties": {
+                    "data": {
+                        "title": "Data",
+                        "description": "Data wrapper",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Login"
+                        }
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "LoginResource"
+                }
+            },
+            "LogoutResource": {
+                "title": "LogoutResource",
+                "description": "Logout resource",
+                "properties": {
+                    "data": {
+                        "title": "Data",
+                        "description": "Data wrapper",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Logout"
+                        }
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "LogoutResource"
                 }
             },
             "UpdateCustomerRequest": {
@@ -372,12 +576,25 @@
                 },
                 "type": "object"
             }
+        },
+        "securitySchemes": {
+            "sanctum": {
+                "type": "apiKey",
+                "description": "Login with email and password to get the authentication token",
+                "name": "Authorization",
+                "scheme": "bearer",
+                "in": "header"
+            }
         }
     },
     "tags": [
         {
+            "name": "Authentication",
+            "description": "API Endpoints of Authentication"
+        },
+        {
             "name": "Customers",
-            "description": "API Endpoints of Customers"
+            "description": "API Endpoints of Customers Relationship Management"
         }
     ],
     "security": [

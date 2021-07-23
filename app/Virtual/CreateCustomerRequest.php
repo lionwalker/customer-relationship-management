@@ -3,6 +3,8 @@
 
 namespace App\Virtual;
 
+use phpDocumentor\Reflection\File;
+
 /**
  * @OA\Schema(
  *      title="Store Customer request",

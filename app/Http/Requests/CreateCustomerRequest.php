@@ -14,10 +14,11 @@ class CreateCustomerRequest extends FormRequest
     public function rules()
     {
         return [
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:customers,email',
-            'phone_number' => 'required|string|max:15',
+            'first_name' => 'sometimes|nullable|required_with:email|required_if:bulk,null|string|max:255',
+            'last_name' => 'sometimes|nullable|required_with:email|required_if:bulk,null|string|max:255',
+            'email' => 'sometimes|nullable|required_with:first_name|required_if:bulk,null|string|email|max:255|unique:customers,email',
+            'phone_number' => 'sometimes|nullable|required_with:email|required_if:bulk,null|string|max:15',
+            'bulk' => 'sometimes|nullable|required_if:email,null|mimes:csv,txt|max:5000',
         ];
     }
 }

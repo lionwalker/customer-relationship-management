@@ -5,7 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CreateCustomerRequest;
 use App\Http\Requests\UpdateCustomerRequest;
 use App\Http\Resources\CustomerResource;
+use App\Imports\CustomersImport;
 use App\Models\Customer;
+use Carbon\Carbon;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Symfony\Component\HttpFoundation\Response;
 
 class CustomersApiController extends Controller
@@ -17,6 +20,7 @@ class CustomersApiController extends Controller
      *      tags={"Customers"},
      *      summary="Get list of customers",
      *      description="Returns list of customers",
+     *      security={{"sanctum": {}}},
      *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
@@ -34,7 +38,7 @@ class CustomersApiController extends Controller
      */
     public function index()
     {
-        return new CustomerResource(Customer::all());
+        return new CustomerResource(Customer::paginate(20));
     }
 
     /**
@@ -44,9 +48,17 @@ class CustomersApiController extends Controller
      *      tags={"Customers"},
      *      summary="Store new customers",
      *      description="Returns customers data",
+     *      security={{"sanctum":{}}},
      *      @OA\RequestBody(
      *          required=true,
      *          @OA\JsonContent(ref="#/components/schemas/CreateCustomerRequest")
+     *      ),
+     *     @OA\Parameter(
+     *          name="bulk",
+     *          in="query",
+     *          description="CSV file to create / update customers",
+     *          required=true,
+     *          @OA\Schema(type="file"),
      *      ),
      *      @OA\Response(
      *          response=201,
@@ -69,25 +81,52 @@ class CustomersApiController extends Controller
      */
     public function store(CreateCustomerRequest $createCustomerRequest)
     {
-        $customer = Customer::create([
-            'first_name' => $createCustomerRequest['first_name'],
-            'last_name' => $createCustomerRequest['last_name'],
-            'email' => $createCustomerRequest['email'],
-            'phone_number' => $createCustomerRequest['phone_number'],
-        ]);
+        // Process bulk files if exists
+        if ($createCustomerRequest->hasFile('bulk')) {
+            $import = new CustomersImport();
+            $import->import($createCustomerRequest->file('bulk'));
+            $failures = $import->failures();
+            if ($failures->count() > 0) {
+                $customers = collect();
+                foreach ($failures as $failure) {
+                    $errors = implode(" ", $failure->errors());
+                    $customer = $failure->values()['email'];
+                    $customers->push(['email' => $customer, 'error' => $errors]);
+                }
+                return response()->json([
+                    'message' => 'The given data was invalid.',
+                    'errors' => [
+                        $customers->toArray()
+                    ]
+                ]);
+            } else {
+                return response()->json(['message' => 'Customers bulk uploaded.'])->setStatusCode(Response::HTTP_CREATED);
+            }
+        }
 
-        return (new CustomerResource($customer))
-            ->response()
-            ->setStatusCode(Response::HTTP_CREATED);
+        // Process form data if exists
+        if (!empty($createCustomerRequest['email'])) {
+            $customer = Customer::create([
+                'first_name' => $createCustomerRequest['first_name'],
+                'last_name' => $createCustomerRequest['last_name'],
+                'email' => $createCustomerRequest['email'],
+                'phone_number' => $createCustomerRequest['phone_number'],
+            ]);
+            return (new CustomerResource($customer))
+                ->response()
+                ->setStatusCode(Response::HTTP_CREATED);
+        }
+
     }
 
     /**
      * @OA\Get(
      *      path="/customers/{id}",
      *      operationId="getCustomerById",
-     *      tags={"Projects"},
+     *      tags={"Customers"},
      *      summary="Get customer information",
      *      description="Returns customer data",
+     *      security={{"sanctum":{}}},
      *      @OA\Parameter(
      *          name="id",
      *          description="Customer id",
@@ -128,6 +167,7 @@ class CustomersApiController extends Controller
      *      tags={"Customers"},
      *      summary="Update existing customer",
      *      description="Returns updated customer data",
+     *      security={{"sanctum":{}}},
      *      @OA\Parameter(
      *          name="id",
      *          description="Customer id",
@@ -184,6 +224,7 @@ class CustomersApiController extends Controller
      *      tags={"Customers"},
      *      summary="Delete existing customer",
      *      description="Deletes a record and returns no content",
+     *      security={{"sanctum":{}}},
      *      @OA\Parameter(
      *          name="id",
      *          description="Customer id",

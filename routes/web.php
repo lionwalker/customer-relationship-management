@@ -28,4 +28,5 @@ Route::get('/', function () {
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/dashboard', [CustomerController::class,'counts'])->name('dashboard');
     Route::resource('customers',CustomerController::class)->except('create', 'show', 'edit');
+    Route::get('failed-customers/{path}', [CustomerController::class,'downloadFailedCustomers']);
 });

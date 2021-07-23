@@ -13,10 +13,17 @@
                     <div>
                         <div class="p-6 sm:px-20 bg-white border-b border-gray-200">
 
-                            <div class="bg-teal-100 border-t-4 border-teal-500 rounded-b text-teal-900 px-4 py-3 shadow-md my-3" role="alert" v-if="flashErrors.message">
+                            <div class="bg-green-100 border-t-4 border-teal-500 rounded-b text-teal-900 px-4 py-3 shadow-md my-3" role="alert" v-if="flash.message">
                                 <div class="flex">
                                     <div>
-                                        <p class="text-sm">{{ flashErrors.message }}</p>
+                                        <p class="text-sm">{{ flash.message }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-red-100 border-t-4 border-teal-500 rounded-b text-teal-900 px-4 py-3 shadow-md my-3" role="alert" v-if="Object.keys(errors).length">
+                                <div class="flex">
+                                    <div>
+                                        <p v-for="error in errors" :key="error" class="text-sm" v-html="error"></p>
                                     </div>
                                 </div>
                             </div>
@@ -74,22 +81,28 @@
                                             <div class="mb-4">
                                                 <label for="exampleFormControlInput1" class="block text-gray-700 text-sm font-bold mb-2">First name:</label>
                                                 <input type="text" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="exampleFormControlInput1" placeholder="Enter first name" v-model="form.first_name">
-                                                <div v-if="pageErrors.first_name" class="text-red-500">{{ pageErrors.first_name[0] }}</div>
+                                                <div v-if="errors.first_name" class="text-red-500">{{ errors.first_name }}</div>
                                             </div>
                                             <div class="mb-4">
                                                 <label for="exampleFormControlInput2" class="block text-gray-700 text-sm font-bold mb-2">Last name:</label>
                                                 <input type="text" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="exampleFormControlInput2" placeholder="Enter last name" v-model="form.last_name">
-                                                <div v-if="pageErrors.last_name" class="text-red-500">{{ pageErrors.last_name[0] }}</div>
+                                                <div v-if="errors.last_name" class="text-red-500">{{ errors.last_name }}</div>
                                             </div>
                                             <div class="mb-4">
                                                 <label for="exampleFormControlInput3" class="block text-gray-700 text-sm font-bold mb-2">Email:</label>
                                                 <input type="email" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="exampleFormControlInput3" placeholder="Enter email" v-model="form.email">
-                                                <div v-if="pageErrors.email" class="text-red-500">{{ pageErrors.email[0] }}</div>
+                                                <div v-if="errors.email" class="text-red-500">{{ errors.email }}</div>
                                             </div>
                                             <div class="mb-4">
                                                 <label for="exampleFormControlInput4" class="block text-gray-700 text-sm font-bold mb-2">Phone number:</label>
                                                 <input type="email" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="exampleFormControlInput4" placeholder="Enter phone number" v-model="form.phone_number">
-                                                <div v-if="pageErrors.phone_number" class="text-red-500">{{ pageErrors.phone_number[0] }}</div>
+                                                <div v-if="errors.phone_number" class="text-red-500">{{ errors.phone_number }}</div>
+                                            </div>
+                                            <div class="mb-4" v-if="!editMode">
+                                                <label for="exampleFormControlInput5" class="block text-gray-700 text-sm font-bold mb-2">Bulk:</label>
+                                                <input type="file" accept="text/csv" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="exampleFormControlInput5" @input="form.bulk = $event.target.files[0]">
+                                                <p><a href="/sample_files/sample_customers.csv" class="text-primary-blue" download>Example file</a></p>
+                                                <div v-if="errors.bulk" class="text-red-500">{{ errors.bulk }}</div>
                                             </div>
                                         </div>
                                     </div>
@@ -138,6 +151,7 @@ export default {
                 last_name: null,
                 email: null,
                 phone_number: null,
+                bulk: null,
             },
             searchKeyword: '',
             pageErrors: Object,
@@ -165,10 +179,11 @@ export default {
                 last_name: null,
                 email: null,
                 phone_number: null,
+                bulk: null,
             }
         },
         save: function (data) {
-            this.$inertia.post('/customers', data, { preserveState:false })
+            this.$inertia.post('/customers', data, { preserveState:false, forceFormData: true })
             this.reset();
             this.closeModal();
             this.editMode = false;
@@ -181,7 +196,6 @@ export default {
         update: function (data) {
             data._method = 'PUT';
             this.$inertia.post('/customers/' + data.id, data, { preserveState:false })
-            console.log(this.errors)
             this.reset();
             this.closeModal();
         },
