@@ -25,7 +25,7 @@ Build assets:
 npm run dev
 ```
 
-Setup configuration:
+Setup configuration with database information:
 
 ```sh
 cp .env.example .env
@@ -37,10 +37,10 @@ Generate application key:
 php artisan key:generate
 ```
 
-Create an SQLite database. You can also use another database (MySQL, Postgres), simply update your configuration accordingly.
+Create MySql database if not already created:
 
 ```sh
-touch database/database.sqlite
+php artisan make:default-db
 ```
 
 Run database migrations:
@@ -61,7 +61,13 @@ Run the dev server (the output will give the address):
 php artisan serve
 ```
 
-You're ready to go! Visit forum in your browser, and login with:
+Ready to go! Visit CRM in your browser, and login with:
 
 - **Username:** admin@admin.com
 - **Password:** Admin@123
+
+#### API documentation
+
+```sh
+http://{base_url}/api/documentation
+```
