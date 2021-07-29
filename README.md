@@ -65,8 +65,3 @@ You're ready to go! Visit forum in your browser, and login with:
 
 - **Username:** admin@admin.com
 - **Password:** Admin@123
-
-### Not covered scope
-
-- create / update new users / existing users by uploading their information using CSV files
-    - This can achieve from using packages like laravel-excel or using native MySql queries like LOAD DATA INFILE
